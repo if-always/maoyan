@@ -11,119 +11,108 @@ file['longt'] = file['longt'].str.strip('分钟').astype('int64')   #.str  因�
 file['years'] = file['times'].str.split('-').str[0]
 file['month'] = file['times'].str.split('-').str[1]
 file['month'] = file['month'].fillna("07")       #设置缺省值
-#file['actor'] = file['actor'].str.split(',')
-#print(file.columns)
-
-str = ''
-
-for x in range(100):
-	str = str + ',' + file.iloc[x]['style']
-types = str.split(',')
 
 
-types = Counter(types)
-most_types = types.most_common(10)
+def movies_type():
+	from pyecharts import Pie
 
-print(most_types)
+	str = ''
+	for x in range(100):
+		str = str + ',' + file.iloc[x]['style']
+	types = str.split(',')
+	types = Counter(types)
+	most_types = types.most_common(10)
+	#print(most_types)
+	attr = [ x[0] for x in most_types]
+	value = [ x[1] for x in most_types]
+	pie = Pie("电影类型", title_pos='right')
+	pie.add(
+	    "",
+	    attr,
+	    value,
+	    radius=[40, 75],
+	    label_text_color=None,
+	    is_label_show=True,
+	    legend_orient="vertical",
+	    legend_pos="left",
+	)
 
-attr = [ x[0] for x in most_types]
-value = [ x[1] for x in most_types]
+	png.render_chart_to_file(pie,path = 'result/picture/type.png')
 
-from pyecharts import Pie
+def actors_name():
+	from pyecharts import WordCloud
+	str_1 = ''
+	for i in range(100):
+	    str_1 = str_1 + ',' + file.iloc[i]['actor']
 
-pie = Pie("电影类型", title_pos='right')
-pie.add(
-    "",
-    attr,
-    value,
-    radius=[40, 75],
-    label_text_color=None,
-    is_label_show=True,
-    legend_orient="vertical",
-    legend_pos="left",
-)
+	actor_name = str_1.split(',')
+	name = Counter(actor_name)
+	most_name = name.most_common(20)
 
-png.render_chart_to_file(pie,path = 'result/picture/type.png')
+	attr = [ x[0] for x in most_name]
+	value = [ x[1] for x in most_name]
+	wordcloud = WordCloud(width=1300, height=620)
+	wordcloud.add("", attr, value, word_size_range=[20, 100])
 
-#@@@@@@@@@@@@@@@@@@@@@@@@@@
-# str_1 = ''
-# for i in range(100):
-#     str_1 = str_1 + ',' + file.iloc[i]['actor']
+	png.render_chart_to_file(wordcloud,path='result/picture/name.png')
 
-# actor_name = str_1.split(',')
-# name = Counter(actor_name)
-# most_name = name.most_common(20)
+def years_count():
 
+	from pyecharts import Bar,Line,Overlap
+	year_count = file.groupby('years')['month'].count()
+	attr = list(year_count.index)
+	v1 = list(year_count)
+	bar = Bar("电影年份分布")
+	bar.add("", attr, v1,mark_line=["average"],mark_point=['max','min'])
 
-# from pyecharts import WordCloud
+	line = Line()
+	line.add("",attr,v1)
 
-# attr = [ x[0] for x in most_name]
-# value = [ x[1] for x in most_name]
-# wordcloud = WordCloud(width=1300, height=620)
-# wordcloud.add("", attr, value, word_size_range=[20, 100])
+	overlap = Overlap()
+	overlap.add(bar)
+	overlap.add(line)
 
-# png.render_chart_to_file(wordcloud,path='result/picture/name.png')
-# print(attr,value)
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-# year_count = file.groupby('years')['month'].count()
-# print(year_count)
+	png.render_chart_to_file(overlap,path='result/picture/years.png')
 
+def countrys_name():
+	from pyecharts import Pie
+	def get_country(data):
+	   
+		datas_2 = []
+		datas_1 = data.split(',')
+		for x in datas_1:
+			if '中国香港' in x:
+				x = '中国'
+				datas_2.append(x)
+			elif '中国台湾' in x:
+				x = '中国'
+				datas_2.append(x)
+			elif '中国大陆' in x:
+				x = '中国'
+				datas_2.append(x)
+			else:
+				datas_2.append(x)
 
-# from pyecharts import Bar,Line,Overlap
-
-# attr = list(year_count.index)
-# v1 = list(year_count)
-# bar = Bar("电影年份分布")
-# bar.add("", attr, v1,mark_line=["average"],mark_point=['max','min'])
-
-# line = Line()
-# line.add("",attr,v1)
-
-# overlap = Overlap()
-# overlap.add(bar)
-# overlap.add(line)
-
-# png.render_chart_to_file(overlap,path='result/picture/years.png')
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-# def get_country(data):
-   
-# 	datas_2 = []
-# 	datas_1 = data.split(',')
-# 	for x in datas_1:
-# 		if '中国香港' in x:
-# 			x = '中国'
-# 			datas_2.append(x)
-# 		elif '中国台湾' in x:
-# 			x = '中国'
-# 			datas_2.append(x)
-# 		elif '中国大陆' in x:
-# 			x = '中国'
-# 			datas_2.append(x)
-# 		else:
-# 			datas_2.append(x)
-
-# 	datas_country.extend(datas_2)
-
-
-# datas_country = []
-# file['areas'].map(get_country)
-# c = Counter(datas_country)
-# countrys = c.most_common(7)
-# v = []
-# attr = []
-# for i in countrys:
-#     v.append(i[1])
-#     attr.append(i[0])
-# print(v,attr)
+		datas_country.extend(datas_2)
 
 
-# from pyecharts import Pie
-# pie = Pie("电影产地统计", title_pos='left', width=900)
-# pie.add(
-#     "",
-#     attr,
-#     v,
-#     is_label_show=True
-# )
-# png.render_chart_to_file(pie, path='result/picture/areas.png')
+	datas_country = []
+	file['areas'].map(get_country)
+	c = Counter(datas_country)
+	countrys = c.most_common(7)
+	v = []
+	attr = []
+	for i in countrys:
+	    v.append(i[1])
+	    attr.append(i[0])
+	print(v,attr)
+
+	pie = Pie("电影产地统计", title_pos='left', width=900)
+	pie.add(
+	    "",
+	    attr,
+	    v,
+	    is_label_show=True
+	)
+	png.render_chart_to_file(pie, path='result/picture/areas.png')
 # #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

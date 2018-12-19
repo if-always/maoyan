@@ -47,4 +47,4 @@ for i in range(0,row_max):
 
 
 print(toImage.size)
-toImage.save('all.png')
+toImage.save('result/picture/all.png')
