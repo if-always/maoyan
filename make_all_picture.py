@@ -34,8 +34,7 @@ for i in range(0,row_max):
         tmppic = pic_fole_head.resize((width_i,height_i))
     
         loc = (int(i%line_max*width_i),int(j%line_max*height_i))
-    
-        #print("第" + str(num) + "存放位置" + str(loc))
+
         toImage.paste(tmppic,loc)
         num = num+1
         if num >= len(all_path):
@@ -44,7 +43,6 @@ for i in range(0,row_max):
 
     if num >= pic_max:
         break
-
 
 print(toImage.size)
 toImage.save('result/picture/all.png')

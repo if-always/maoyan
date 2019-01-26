@@ -116,3 +116,7 @@ def countrys_name():
 	)
 	png.render_chart_to_file(pie, path='result/picture/areas.png')
 # #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#
+#
+def times_score():
+	pass

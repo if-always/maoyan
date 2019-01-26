@@ -42,7 +42,8 @@ def get_info(url):
     html = etree.HTML(res.text)
     style = html.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[1]/text()')[0]
     area = html.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[2]/text()')[0].split('/')[0].strip()
-    long_time = html.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[2]/text()')[0].split('/')[1].strip()
+    longt = html.xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[2]/text()')[0].split('/')[1].strip()
+    #times = html,xpath('/html/body/div[3]/div/div[2]/div[1]/ul/li[3]/text()')[0][0:9]
     return style,area,long_time
 
 
